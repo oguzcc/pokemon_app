@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../../app/constants/strings.dart';
 import '../model/pokemon_list.dart';
 
-class PokemonRepo {
+class PokemonListRepo {
   final client = http.Client();
   final String innerPath = '/api/v2/pokemon';
 

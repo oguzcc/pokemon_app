@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokemon_app/pokemon_details/nav_cubit.dart';
 import '../../app/constants/strings.dart';
 import '../../components/loading_view.dart';
 import '../bloc/pokemon_list_bloc.dart';
@@ -33,39 +34,45 @@ class PokemonListView extends StatelessWidget {
             return const LoadingView();
           } else if (state is PokemonListLoaded) {
             return GridView.builder(
+              scrollDirection: Axis.vertical,
+              physics: const BouncingScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3),
               itemCount: state.pokemonList.length,
               itemBuilder: (context, index) => Container(
                 margin: const EdgeInsets.all(4),
-                child: Card(
-                  color: Colors.red[50],
-                  child: Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      Positioned(
-                        top: 20,
-                        child: Text(
-                          '${index + 1}',
-                          style: Theme.of(context).textTheme.bodyText1,
+                child: GestureDetector(
+                  onTap: () => BlocProvider.of<NavCubit>(context)
+                      .showPokemonDetails(index + 1),
+                  child: Card(
+                    color: Colors.red[50],
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Positioned(
+                          top: 20,
+                          child: Text(
+                            '${index + 1}',
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        top: 30,
-                        child: Image.network(
-                          state.pokemonList[index].imageUrl +
-                              '${index + 1}.png',
-                          fit: BoxFit.cover,
+                        Positioned(
+                          top: 30,
+                          child: Image.network(
+                            state.pokemonList[index].imageUrl +
+                                '${index + 1}.png',
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        child: Text(
-                          state.pokemonList[index].name.toString(),
-                          style: Theme.of(context).textTheme.headline6,
+                        Positioned(
+                          bottom: 10,
+                          child: Text(
+                            state.pokemonList[index].name.toString(),
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
