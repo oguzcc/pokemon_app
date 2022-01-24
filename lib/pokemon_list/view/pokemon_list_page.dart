@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokemon_app/pokemon_details/nav_cubit.dart';
+import '../../pokemon_details/nav_cubit.dart';
 import '../../app/constants/strings.dart';
 import '../../components/loading_view.dart';
 import '../bloc/pokemon_list_bloc.dart';
@@ -10,11 +10,7 @@ class PokemonListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          PokemonListBloc()..add(PokemonListRequest(pageIndex: 0)),
-      child: const PokemonListView(),
-    );
+    return const PokemonListView();
   }
 }
 
@@ -39,40 +35,30 @@ class PokemonListView extends StatelessWidget {
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3),
               itemCount: state.pokemonList.length,
-              itemBuilder: (context, index) => Container(
-                margin: const EdgeInsets.all(4),
-                child: GestureDetector(
-                  onTap: () => BlocProvider.of<NavCubit>(context)
-                      .showPokemonDetails(index + 1),
-                  child: Card(
-                    color: Colors.red[50],
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Positioned(
-                          top: 20,
-                          child: Text(
-                            '${index + 1}',
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () => context
+                    .read<NavCubit>()
+                    .showPokemonDetails(state.pokemonList[index].id),
+                child: Card(
+                  color: index % 2 == 0 ? Colors.red[50] : Colors.blue[50],
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Positioned(
+                        top: 8,
+                        child: Image.network(
+                          state.pokemonList[index].imageUrl,
+                          fit: BoxFit.cover,
                         ),
-                        Positioned(
-                          top: 30,
-                          child: Image.network(
-                            state.pokemonList[index].imageUrl +
-                                '${index + 1}.png',
-                            fit: BoxFit.cover,
-                          ),
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        child: Text(
+                          state.pokemonList[index].name,
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
-                        Positioned(
-                          bottom: 10,
-                          child: Text(
-                            state.pokemonList[index].name.toString(),
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

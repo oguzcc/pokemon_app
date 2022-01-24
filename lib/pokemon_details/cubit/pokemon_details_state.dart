@@ -5,12 +5,22 @@ abstract class PokemonDetailsState {}
 
 class PokemonDetailsInitial extends PokemonDetailsState {}
 
+class PokemonDetailsLoading extends PokemonDetailsState {}
+
 class PokemonDetailsLoaded extends PokemonDetailsState {
   final PokemonDetails pokemonDetails;
 
   PokemonDetailsLoaded({required this.pokemonDetails});
 }
 
-class PokemonDetailsSuccess extends PokemonDetailsState {}
+class PokemonDetailsClear extends PokemonDetailsState {
+  final PokemonListInitial pokemonListInitial;
 
-class PokemonDetailsClear extends PokemonDetailsState {}
+  PokemonDetailsClear({required this.pokemonListInitial});
+}
+
+class PokemonDetailsFailed extends PokemonDetailsState {
+  final Exception exception;
+
+  PokemonDetailsFailed({required this.exception});
+}

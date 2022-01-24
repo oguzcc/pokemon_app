@@ -17,8 +17,9 @@ class PokemonListBloc extends Bloc<PokemonListEvent, PokemonListState> {
         final response = await _pokemonListRepo.getPokemonList(event.pageIndex);
 
         emit(PokemonListLoaded(
-            pokemonList: response.pokemonList,
-            canLoadNextPage: response.canLoadNextPage));
+          pokemonList: response.pokemonList,
+          canLoadNextPage: response.canLoadNextPage,
+        ));
       } on Exception catch (e) {
         emit(PokemonListFailed(exception: e));
       }

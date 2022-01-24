@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:pokemon_app/pokemon_list/bloc/pokemon_list_bloc.dart';
 import '../data/model/pokemon_details.dart';
 import '../data/model/pokemon_info_response.dart';
 import '../data/model/pokemon_species_response.dart';
@@ -13,6 +14,8 @@ class PokemonDetailsCubit extends Cubit<PokemonDetailsState> {
   final _pokemonDetailsRepository = PokemonDetailsRepository();
 
   void getPokemonDetails(int pokemonId) async {
+    emit(PokemonDetailsLoading());
+
     final responses = await Future.wait([
       _pokemonDetailsRepository.getPokemonInfo(pokemonId),
       _pokemonDetailsRepository.getPokemonSpeciesInfo(pokemonId),
@@ -34,5 +37,6 @@ class PokemonDetailsCubit extends Cubit<PokemonDetailsState> {
     emit(PokemonDetailsLoaded(pokemonDetails: pokemonDetails));
   }
 
-  void clearPokemonDetails() => emit(PokemonDetailsClear());
+  void clearPokemonDetails() =>
+      emit(PokemonDetailsClear(pokemonListInitial: PokemonListInitial()));
 }

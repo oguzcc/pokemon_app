@@ -16,9 +16,12 @@ class PokemonListRepo {
 
     final uri = Uri.https(baseUrl, innerPath, queryParameters);
 
-    final response = await client.get(uri);
-    final json = jsonDecode(response.body);
-
-    return PokemonListResponse.fromJson(json);
+    try {
+      final response = await client.get(uri);
+      final json = jsonDecode(response.body);
+      return PokemonListResponse.fromJson(json);
+    } on Exception {
+      rethrow;
+    }
   }
 }

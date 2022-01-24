@@ -11,16 +11,24 @@ class PokemonDetailsRepository {
   Future<PokemonInfoResponse> getPokemonInfo(int pokemonId) async {
     final uri = Uri.https(baseUrl, '/api/v2/pokemon/$pokemonId');
 
-    final response = await client.get(uri);
-    final json = jsonDecode(response.body);
-    return PokemonInfoResponse.fromJson(json);
+    try {
+      final response = await client.get(uri);
+      final json = jsonDecode(response.body);
+      return PokemonInfoResponse.fromJson(json);
+    } on Exception {
+      rethrow;
+    }
   }
 
   Future<PokemonSpeciesResponse> getPokemonSpeciesInfo(int pokemonId) async {
     final uri = Uri.https(baseUrl, '/api/v2/pokemon-species/$pokemonId');
 
-    final response = await client.get(uri);
-    final json = jsonDecode(response.body);
-    return PokemonSpeciesResponse.fromJson(json);
+    try {
+      final response = await client.get(uri);
+      final json = jsonDecode(response.body);
+      return PokemonSpeciesResponse.fromJson(json);
+    } on Exception {
+      rethrow;
+    }
   }
 }

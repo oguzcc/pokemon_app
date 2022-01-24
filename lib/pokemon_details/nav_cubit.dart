@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../pokemon_list/bloc/pokemon_list_bloc.dart';
 
 import 'cubit/pokemon_details_cubit.dart';
 
@@ -9,12 +10,12 @@ class NavCubit extends Cubit<PokemonDetailsState> {
       : super(PokemonDetailsInitial());
 
   void showPokemonDetails(int pokemonId) {
-    emit(PokemonDetailsSuccess());
     pokemonDetailsCubit.getPokemonDetails(pokemonId);
+    emit(PokemonDetailsLoading());
   }
 
   void popToPokemonList() {
-    // emit(PokemonDetailsClear());
     pokemonDetailsCubit.clearPokemonDetails();
+    emit(PokemonDetailsClear(pokemonListInitial: PokemonListInitial()));
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokemon_app/pokemon_details/cubit/pokemon_details_cubit.dart';
+import '../../components/loading_view.dart';
+import '../../app/constants/colors.dart';
+import '../cubit/pokemon_details_cubit.dart';
 
 class PokemonDetailsPage extends StatelessWidget {
   const PokemonDetailsPage({Key? key}) : super(key: key);
@@ -16,139 +18,83 @@ class PokemonDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pokemon Details'),
-      ),
-      backgroundColor: const Color(0xFFF2F2F2),
-      body: BlocBuilder<PokemonDetailsCubit, PokemonDetailsState>(
-        builder: (context, state) {
-          if (state is PokemonDetailsLoaded) {
-            return Center(
-              child: Column(
-                children: [
-                  Expanded(
-                      flex: 3,
-                      child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Image.network(
-                              state.pokemonDetails.imageUrl,
-                              fit: BoxFit.cover,
-                              height: MediaQuery.of(context).size.height * 0.3,
-                            ),
-                            Text(state.pokemonDetails.name),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: state.pokemonDetails.types
-                                  .map((type) => _pokemonTypeView(type))
-                                  .toList(),
-                            ),
-                            Text(
-                                'id: ${state.pokemonDetails.id}  -  Weight: ${state.pokemonDetails.weight}  -  Height: ${state.pokemonDetails.height}')
-                          ],
-                        ),
-                      )),
-                  Expanded(
-                      flex: 2,
-                      child: SizedBox(
-                        width: double.infinity,
+    final _textStyle6 = Theme.of(context).textTheme.headline6;
+    return BlocBuilder<PokemonDetailsCubit, PokemonDetailsState>(
+      builder: (context, state) {
+        if (state is PokemonDetailsLoading) {
+          return const LoadingView();
+        } else if (state is PokemonDetailsLoaded) {
+          return Scaffold(
+              appBar: AppBar(
+                title: Text(state.pokemonDetails.name.toUpperCase()),
+              ),
+              body: Center(
+                child: Column(
+                  children: [
+                    Expanded(
+                        flex: 2,
                         child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              state.pokemonDetails.description,
-                              textAlign: TextAlign.center,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          color: state.pokemonDetails.id % 2 == 0
+                              ? Colors.blue[50]
+                              : Colors.red[50],
+                          elevation: 2,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Image.network(
+                                state.pokemonDetails.imageUrl,
+                                fit: BoxFit.cover,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: state.pokemonDetails.types
+                                    .map((type) => pokemonTypeView(type))
+                                    .toList(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 24),
+                                child: Text(
+                                  'id: ${state.pokemonDetails.id}\nWeight: ${state.pokemonDetails.weight}\nHeight: ${state.pokemonDetails.height}',
+                                  textAlign: TextAlign.center,
+                                  style: _textStyle6,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                    Expanded(
+                        flex: 2,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            color: state.pokemonDetails.id % 2 == 0
+                                ? Colors.red[50]
+                                : Colors.blue[50],
+                            elevation: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Text(
+                                state.pokemonDetails.description,
+                                textAlign: TextAlign.center,
+                                style: _textStyle6,
+                              ),
                             ),
                           ),
-                        ),
-                      ))
-                ],
-              ),
-            );
-          } else {
-            return Container();
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _pokemonTypeView(String type) {
-    Color color;
-
-    switch (type) {
-      case 'normal':
-        color = Color(0xFFbdbeb0);
-        break;
-      case 'poison':
-        color = Color(0xFF995E98);
-        break;
-      case 'psychic':
-        color = Color(0xFFE96EB0);
-        break;
-      case 'grass':
-        color = Color(0xFF9CD363);
-        break;
-      case 'ground':
-        color = Color(0xFFE3C969);
-        break;
-      case 'ice':
-        color = Color(0xFFAFF4FD);
-        break;
-      case 'fire':
-        color = Color(0xFFE7614D);
-        break;
-      case 'rock':
-        color = Color(0xFFCBBD7C);
-        break;
-      case 'dragon':
-        color = Color(0xFF8475F7);
-        break;
-      case 'water':
-        color = Color(0xFF6DACF8);
-        break;
-      case 'bug':
-        color = Color(0xFFC5D24A);
-        break;
-      case 'dark':
-        color = Color(0xFF886958);
-        break;
-      case 'fighting':
-        color = Color(0xFF9E5A4A);
-        break;
-      case 'ghost':
-        color = Color(0xFF7774CF);
-        break;
-      case 'steel':
-        color = Color(0xFFC3C3D9);
-        break;
-      case 'flying':
-        color = Color(0xFF81A2F8);
-        break;
-      case 'normal':
-        color = Color(0xFFF9E65E);
-        break;
-      case 'fairy':
-        color = Color(0xFFEEB0FA);
-        break;
-      default:
-        color = Colors.black;
-        break;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-            color: color, borderRadius: BorderRadius.all(Radius.circular(8))),
-        child: Text(
-          type.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-      ),
+                        ))
+                  ],
+                ),
+              ));
+        } else if (state is PokemonDetailsFailed) {
+          return Center(child: Text('${state.exception}'));
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

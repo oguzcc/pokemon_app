@@ -15,11 +15,11 @@ class AppNavigator extends StatelessWidget {
       return Navigator(
         pages: [
           const MaterialPage(child: PokemonListPage()),
-          if (state is PokemonDetailsSuccess)
+          if (state is PokemonDetailsLoaded || state is PokemonDetailsLoading)
             const MaterialPage(child: PokemonDetailsPage())
         ],
         onPopPage: (route, result) {
-          BlocProvider.of<NavCubit>(context).popToPokemonList();
+          context.read<NavCubit>().popToPokemonList();
           return route.didPop(result);
         },
       );
